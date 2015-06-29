@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration PUBLIC
+"-//mybatis.org//DTD Config 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- 配置参考文档：http://mybatis.github.com/mybatis-3/zh/configuration.html -->
+<configuration>
+	<properties>
+		<property name="dialect" value="oracle"/>
+	</properties>
+	<settings>
+		<!-- 全局的映射器启用或禁用 缓存。默认值true -->
+		<setting name="cacheEnabled" value="false" />
+		
+		<!-- 全局启用或禁用延迟加载。当禁用时, 所有关联对象都会即时加载。默认值true  -->
+		<setting name="lazyLoadingEnabled" value="true"/>
+		
+		<!-- 允许或不允许多种结果集从一个单独 的语句中返回(需要适合的驱动) 。默认值true -->
+		<setting name="multipleResultSetsEnabled" value="true"/>
+		
+		<!-- 是否可以使用别名获取，具体取决于驱动程序是否支持。默认为true -->
+		<setting name="useColumnLabel" value="true"/>
+		
+		<!-- 允许JDBC 生成主键。需要驱动器支持。如果设为了true，这个设置将强制使用被生成的主键，有一些驱动器不兼容不过仍然可以执行（比如Derby）。默认值false -->
+		<setting name="useGeneratedKeys" value="false"/>
+		
+		<!-- 指定是否以及如何自动映射数据字段到POJO字段。三个选项：NONE不自动映射；PARTIAL将只自动映射简单的，没有嵌套的结果；FULL将自动映射任何（包含嵌套或以其他方式）复杂的结果。默认值PARTIAL -->
+		<setting name="autoMappingBehavior" value="PARTIAL"/>
+		
+		<!-- 默认执行方式。三种方式：SIMPLE默认没有特殊处理；REUSE重用PreparedStatements；BATCH重用statements和进行批量更新。默认值：SIMPLE -->
+		<setting name="defaultExecutorType" value="SIMPLE"/>
+		
+		<!-- 设置Statement默认数据库响应超时时间，单位为妙。 -->
+		<setting name="defaultStatementTimeout" value="1200"/>
+		
+		<!-- 嵌套结果映射，是否使用rowbounds进行分页，建议不要使用rowbounds进行分页，特别是SQL执行返回结果很大的情况下（因为它用的是返回后截取-逻辑分页）。默认值false -->
+		<setting name="safeRowBoundsEnabled" value="false"/>
+		
+		<!-- 进行自动映射时，数据以下划线命名，如数据库返回的"order_address"命名字段是否映射为class的"orderAddress"字段。默认为false -->
+		<setting name="mapUnderscoreToCamelCase" value="false"/>
+		
+		<!-- MyBatis使用本地缓存来提高重复查询的速度。两个选项：SESSION，和我们hibernate里的session类似，在同一个session中共享；STATEMENT，只在同一个statement中共享。默认值SESSION -->
+		<setting name="localCacheScope" value="SESSION"/>
+		
+		 <!-- 有些驱动程序在返回值为NULL时需要指定JDBC类型，大部分情况下是：NULL、VARCHAR或OTHER。默认值OTHER -->
+		<setting name="jdbcTypeForNull" value="OTHER"/>
+		
+		<!-- 指定对象中什么方法会触发延迟加载。值为以逗号分隔的方法名称列表。 -->
+		<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+		
+		<!-- 当结果集中含有Null值时是否执行映射对象的setter或者Map对象的put方法。此设置对于原始类型如int,boolean等无效。 默认值false -->
+		<setting name="callSettersOnNulls" value="false"/>
+	</settings>
+</configuration>

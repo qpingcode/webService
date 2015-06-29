@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.neusoft.dao.LogDao">
+
+	<insert id="insertLog" parameterType="Map">
+    	insert into tj_log(
+    	   id        ,
+		   flag      ,
+		   cause     ,
+		   errorMsg  ,
+		   url       ,
+		   uri       ,
+		   clientIp  ,
+		   username  ,
+		   password  ,
+		   methodName,
+		   paramNames,
+		   paramValues,
+		   requesttime
+    	) values (
+    		SEQ_LOG.Nextval,
+    		#{flag},
+    		#{cause},
+    		#{errorMsg},
+    		#{url},
+    		#{uri},
+    		#{clientIp},
+    		#{username},
+    		#{password},
+    		#{methodName},
+    		#{paramNames},
+    		#{paramValues},
+    		sysdate
+    	)
+	</insert>
+
+</mapper>

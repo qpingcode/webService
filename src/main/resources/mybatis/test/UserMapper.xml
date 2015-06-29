@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.neusoft.dao.UserDao">
+	<select id="get" resultType="com.neusoft.entity.User" parameterType="map">
+		select username,password
+		 from TJ_USER
+	</select>
+
+</mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                       http://www.springframework.org/schema/beans/spring-beans.xsd
+                       http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder ignore-unresolvable="true" location="classpath*:/application.properties" />
+
+    <context:component-scan base-package="com.neusoft" />
+    <context:annotation-config />
+
+    <!-- 系统数据源配置  -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <!-- Connection Info -->
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="defaultAutoCommit" value="false" />
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="1" />
+        <property name="minIdle" value="1" />
+        <property name="maxActive" value="50" />
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="60000" />
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        <property name="validationQuery" value="SELECT 'x' FROM DUAL" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        <property name="poolPreparedStatements" value="true" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="100" />
+        <!-- 配置监控统计拦截的filters -->
+        <property name="filters" value="stat,log4j" />
+    </bean>
+    <!-- myBatis分页插件 -->
+    <bean id="paginationInterceptor" class="com.neusoft.common.mybatis.interceptor.PaginationInterceptor"></bean>
+
+    <!-- MyBatis配置 系统数据源 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
+        <property name="typeAliasesPackage" value="com.neusoft.entity" />
+        <!-- 显式指定Mapper文件位置 -->
+        <property name="mapperLocations" value="classpath:/mybatis/test/*Mapper.xml" />
+
+        <!-- 分页插件配置 -->
+        <property name="plugins">
+            <array>
+                <ref bean="paginationInterceptor"/>
+            </array>
+        </property>
+        <!-- mybatis配置文件 （用来配置数据库方言） -->
+        <property name="configLocation" value="classpath:/mybatis/mybatis.cfg.xml"/>
+    </bean>
+
+    <!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.neusoft.dao" />
+        <property name="annotationClass" value="com.neusoft.common.mybatis.MyBatisRepository"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+    <!-- 用于持有ApplicationContext,可以使用SpringContextHolder.getBean('xxxx')的静态方法得到spring bean对象 -->
+    <bean class="com.neusoft.common.util.SpringContextHolder" lazy-init="false" />
+
+    <!-- webService -->
+    <bean id="WSS4JInInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+        <constructor-arg>
+            <map>
+                <entry key="action" value="UsernameToken" />  <!-- 用户认证（明文密码） -->
+                <entry key="passwordType" value="PasswordText" />
+                <entry key="passwordCallbackClass" value="com.neusoft.webservices.ServerPasswordCallback" />
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <jaxws:endpoint id="TjQuery" implementor="com.neusoft.webservices.impl.TjQueryImpl" address="/TjQuery">
+
+        <!-- 输入拦截器 -->
+        <jaxws:inInterceptors>
+            <bean class="org.apache.cxf.binding.soap.saaj.SAAJInInterceptor" />
+            <ref bean="WSS4JInInterceptor" />
+        </jaxws:inInterceptors>
+
+        <!-- 查询记录拦截器 -->
+        <jaxws:outInterceptors>
+            <bean class="com.neusoft.webservices.ErrorHandlerInterceptor"></bean>
+        </jaxws:outInterceptors>
+
+        <!-- 查询记录拦截器 -->
+        <jaxws:outFaultInterceptors>
+            <bean class="com.neusoft.webservices.ErrorHandlerInterceptor"></bean>
+        </jaxws:outFaultInterceptors>
+
+    </jaxws:endpoint>
+</beans>
