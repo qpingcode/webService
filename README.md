@@ -2,7 +2,7 @@
 a java webService project,use spring/mybatis/apache cxf.
 
 ## 1 database config
-modify the file ： src\main\resources\application.properties
+modify the file ： src\main\resources\application.properties. this project contains oracle jdbc,if need other,should add jdbc lib.
 
 ## 2 mybatis config
 add xml file to the floder：src\main\resources\mybatis\
